@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="hahaCoder" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      Google浏览器扩展程序开发案例展示（四） 
+      
+      
+      |
+    
+     石璞东
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  <!-- jquery3.3.1 -->
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- fancybox -->
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <script async src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js"></script>
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">大家好，我是石璞东</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/DLModels/">
+          <a href="/DLModels/">DLModels</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+<!-- LaTex Display -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Google浏览器扩展程序开发案例展示（四）</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="Update time"></i>
+          2021-01-25 14:24:50
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="Tags"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/Google%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%A9%E5%B1%95%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91/" title="Google浏览器扩展程序开发">
+                    <b>#</b> Google浏览器扩展程序开发
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" title="前端开发">
+                    <b>#</b> 前端开发
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>在上一小节中，我们完成了第三个案例：<strong>给特定网站中的元素修改样式</strong>，文章链接如下：</p>
+<p>在本小节中，我们再来看一个案例，用户在浏览网页的时候，经常会遇到一些不认识的英文单词或者想要查询的某些专有名词等，该扩展程序能够帮助用户通过百度浏览器搜索网页中选中的内容，并展示在新的标签页，请看效果展示：</p>
+<p><img src="https://img-blog.csdnimg.cn/2021012514551369.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70" alt="效果展示"></p>
+<center style="color:gray;font-size:10px;">图1 - hahaBaidu搜索</center>
+<br/>
+
+<p><img src="https://img-blog.csdnimg.cn/20210125145555850.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70" alt="搜索结果展示"></p>
+<center style="color:gray;font-size:10px;">图2 - 搜索结果展示</center>
+
+<br/>
+
+<p>接下来，我们开始本文内容的讲解。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>➡️ Google API Reference：<a target="_blank" rel="noopener" href="https://developer.chrome.com/docs/extensions/reference/">https://developer.chrome.com/docs/extensions/reference/</a></p>
+<h3 id="1-新建项目"><a href="#1-新建项目" class="headerlink" title="1. 新建项目"></a>1. 新建项目</h3><p>首先，我们新建一个文件，取名 <strong>google_demo4</strong>，该文件中包含扩展程序配置文件（manifest.json）后台脚本文件（eventPage.js），如图所示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210125145850531.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70" alt="demo"></p>
+<center style="color:gray;font-size:10px;">图3 - 文件夹内容展示</center>
+
+<br/>
+完成了项目的准备工作之后，我们就可以开始写代码了。
+
+
+<h3 id="2-扩展程序文件配置（manifest-json）"><a href="#2-扩展程序文件配置（manifest-json）" class="headerlink" title="2. 扩展程序文件配置（manifest.json）"></a>2. 扩展程序文件配置（manifest.json）</h3><p>首先，我们新建一个 manifest.json 配置文件，并作如下配置，请看配置代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token punctuation">&#123;</span>
+  <span class="token string">"manifest_version"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token string">"name"</span><span class="token operator">:</span> <span class="token string">"hahaBaidu"</span><span class="token punctuation">,</span>
+  <span class="token string">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+  <span class="token string">"description"</span><span class="token operator">:</span> <span class="token string">"Search what you want on baidu"</span><span class="token punctuation">,</span>
+  <span class="token string">"background"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">"scripts"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"eventPage.js"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">"persistent"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token string">"permissions"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"tabs"</span><span class="token punctuation">,</span><span class="token string">"contextMenus"</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述配置文件中，我们对扩展程序主要做了如下配置：</p>
+<ul>
+<li>该扩展程序的名称（name）为 <strong>hahaBaidu</strong>，简介（description）为 <strong>Search what you want on baidu</strong>，当前版本（version）为 <strong>1.0版本</strong>，所使用的配置文件语法标准为 <strong>MV2</strong>；</li>
+<li>该扩展程序属于事件驱动类型，只有当用户触发对应事件时，该扩展程序才能被访问；</li>
+<li>该扩展程序的可用权限包括 tabs 和 contextMenus ；</li>
+</ul>
+<h3 id="3-后台脚本文件（eventPage-js）"><a href="#3-后台脚本文件（eventPage-js）" class="headerlink" title="3. 后台脚本文件（eventPage.js）"></a>3. 后台脚本文件（eventPage.js）</h3><p>该扩展程序没有默认的弹出界面，我们直接来看该扩展程序的后台业务逻辑：首先我们需要创建一个 contextMenus，并指定其id、title和contexts，请看代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> menuItem <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">"id"</span><span class="token operator">:</span><span class="token string">"baidu"</span><span class="token punctuation">,</span>
+    <span class="token string">"title"</span><span class="token operator">:</span><span class="token string">"hahaBaidu"</span><span class="token punctuation">,</span>
+    <span class="token string">"contexts"</span><span class="token operator">:</span><span class="token punctuation">[</span><span class="token string">"selection"</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span>
+chrome<span class="token punctuation">.</span>contextMenus<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>menuItem<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们指定了该菜单的 id（baidu）、title（hahaBaidu）以及contexts（selection），接下来我们来分析一下当输入关键词之后，百度搜索链接的具体结构，我们打开百度首页，其官网地址如下所示：<a target="_blank" rel="noopener" href="https://www.baidu.com/">https://www.baidu.com/</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20210125151755355.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70" alt="百度搜索"></p>
+<center style="color:gray;font-size:10px;">图4 - 百度搜索界面</center>
+
+<br/>
+
+<p>接着我们输入关键词 <strong>石璞东</strong>，并打开「开发者工具」，选中「Network」选项，找到从服务器成功请求的第一条文件，如图所示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210125152014807.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70" alt="百度搜索结果"></p>
+<center style="color:gray;font-size:10px;">图5 - 真实搜索地址</center>
+<br/>
+
+<p>我们重点来看一下 Request URL 字段，经过分析我们知道，该搜索链接的组成包括 网络协议（https） + 域名 + 编码后的关键词 + 其他参数，请看下图中对于请求参数的描述：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210125152142642.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70" alt="search"></p>
+<center style="color:gray;font-size:10px;">图6 - 搜索地址参数</center>
+<br/>
+
+<p>经过上述分析我们知道，该链接中最重要的参数就是编码后的关键词，所以如果我们需要构造一个请求链接，最为关键的就是对用户在网页中选中的关键词进行编码，请看编码的函数：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">fixedEncodeURI</span><span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">encodeURI</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">%5B</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span><span class="token string">'['</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">%5D</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">,</span><span class="token string">']'</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>请看效果展示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210125152814869.png" alt="shipudong"></p>
+<center style="color:gray;font-size:10px;">图7 - 编码函数效果展示</center>
+<br/>
+
+
+<p>所以我们可以通过如下代码去构造一个请求链接，请看演示代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> baiduUrl <span class="token operator">=</span> <span class="token string">"https://www.baidu.com/s?wd="</span><span class="token operator">+</span><span class="token function">fixedEncodeURI</span><span class="token punctuation">(</span><span class="token string">"这里是用户输入的内容"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>完成 contextMenus 的创建和对关键词进行编码的准备工作之后，我们来处理当用户触发点击事件之后的业务逻辑，思路很简单，用户选中网页内容之后，点击 contextMenus 中的 item，即可通过百度搜索去查询所选中的内容，并展现在新的标签页当中，请看代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">chrome<span class="token punctuation">.</span>contextMenus<span class="token punctuation">.</span>onClicked<span class="token punctuation">.</span><span class="token function">addListener</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">clickData</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"clickData"</span><span class="token punctuation">,</span>clickData<span class="token punctuation">)</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>clickData<span class="token punctuation">.</span>menuItemId <span class="token operator">==</span><span class="token string">"baidu"</span> <span class="token operator">&amp;&amp;</span> clickData<span class="token punctuation">.</span>selectionText<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">var</span> baiduUrl <span class="token operator">=</span> <span class="token string">"https://www.baidu.com/s?wd="</span><span class="token operator">+</span><span class="token function">fixedEncodeURI</span><span class="token punctuation">(</span>clickData<span class="token punctuation">.</span>selectionText<span class="token punctuation">)</span>
+        <span class="token keyword">var</span> createData <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+            <span class="token string">"url"</span><span class="token operator">:</span>baiduUrl<span class="token punctuation">,</span>
+            <span class="token string">"type"</span><span class="token operator">:</span><span class="token string">"popup"</span><span class="token punctuation">,</span>
+            <span class="token string">"top"</span><span class="token operator">:</span><span class="token number">5</span><span class="token punctuation">,</span>
+            <span class="token string">"left"</span><span class="token operator">:</span><span class="token number">5</span><span class="token punctuation">,</span>
+            <span class="token string">"width"</span><span class="token operator">:</span>screen<span class="token punctuation">.</span>width<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">,</span>
+            <span class="token string">"height"</span><span class="token operator">:</span>screen<span class="token punctuation">.</span>height<span class="token operator">/</span><span class="token number">2</span>
+        <span class="token punctuation">&#125;</span>
+        chrome<span class="token punctuation">.</span>windows<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>createData<span class="token punctuation">,</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们对新的标签页做了一些约束，包括偏移量（left、top）以及窗口大小（width、height）等。</p>
+<h3 id="4-效果展示"><a href="#4-效果展示" class="headerlink" title="4. 效果展示"></a>4. 效果展示</h3><p>当所有代码编写完成之后，我们将该扩展程序安装在自己的本地计算机上，具体的安装步骤这里不再赘述，安装成功之后，将刚刚上传的扩展程序固定在工具栏中，我们随意打开一个有文字内容的网页，并选中想要查询的内容，然后通过我们刚刚上传的扩展程序去完成百度搜索的操作，请看效果：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210125154104760.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center style="color:gray;font-size:10px;">图8 - 最终效果展示</center>
+<br/>
+
+
+<p><img src="https://img-blog.csdnimg.cn/20210125155837579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70" alt="搜索结果展示"></p>
+<center style="color:gray;font-size:10px;">图9 - 搜索效果展示</center>
+<br/>
+
+<h3 id="6-文章最后"><a href="#6-文章最后" class="headerlink" title="6. 文章最后"></a>6. 文章最后</h3><p>以上就是本文的所有内容，小伙伴们学会了嘛？快去实践一下吧！<br>「注」本文完整代码已上传至Github，地址：<a target="_blank" rel="noopener" href="https://github.com/TURBO1002/GoogleExtensions">https://github.com/TURBO1002/GoogleExtensions</a></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/01/25/GoogleExtensions-BudgetManager/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="Update time"></i>
+              2021-01-25 14:24:50
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="Tags"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/Google%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%A9%E5%B1%95%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91/" title="Google浏览器扩展程序开发">
+                        <b>#</b> Google浏览器扩展程序开发
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" title="前端开发">
+                        <b>#</b> 前端开发
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div class="post-catalog" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-text">1. 新建项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%A9%E5%B1%95%E7%A8%8B%E5%BA%8F%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE%EF%BC%88manifest-json%EF%BC%89"><span class="toc-text">2. 扩展程序文件配置（manifest.json）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%90%8E%E5%8F%B0%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6%EF%BC%88eventPage-js%EF%BC%89"><span class="toc-text">3. 后台脚本文件（eventPage.js）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%95%88%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="toc-text">4. 效果展示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%96%87%E7%AB%A0%E6%9C%80%E5%90%8E"><span class="toc-text">6. 文章最后</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  <div id="vcomments"></div>
+
+  <script>
+    new Valine({
+      el: '#vcomments',
+      appId: 'o0mB8Lk91UNsopY04u0Txrfz-gzGzoHsz',
+      appKey: '9o0SPf6H8r93Xqp1kaprRmSB',
+      placeholder: 'Welcome!',
+      avatar: 'retro',
+      lang: 'en'
+    })
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        <div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://github.com/TURBO1002">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="email" href="">
+            <i class="iconfont icon-envelope"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="facebook" href="">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="twitter" href="">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="wechat" href="">
+            <i class="iconfont icon-wechat"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="weibo" target="_blank" rel="noopener" href="https://weibo.com/6217165734/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1">
+            <i class="iconfont icon-weibo"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="rss" href="/atom.xml">
+            <i class="iconfont icon-rss"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © Oranges 2020</a>
+        
+    </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://www.shipudong.com">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="back-to-top hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+      
+  <div class="search-icon" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+    </div>
+  </body>
+</html>
