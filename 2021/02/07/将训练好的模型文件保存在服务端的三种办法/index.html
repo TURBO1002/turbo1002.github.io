@@ -11,7 +11,7 @@
   
   <title>
     
-      微信小程序分包加载 
+      将训练好的模型保存在服务端的三种办法 
       
       
       |
@@ -123,21 +123,15 @@ MathJax = {
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">微信小程序分包加载</div>
+      <div class="post-title">将训练好的模型保存在服务端的三种办法</div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime" title="Update time"></i>
-          2021-02-07 13:50:50
+          2021-02-07 16:53:50
         </span>
         
               <span class="post-tags">
                 <i class="iconfont icon-tags" title="Tags"></i>
-                
-                <span class="span--tag">
-                  <a href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" title="前端开发">
-                    <b>#</b> 前端开发
-                  </a>
-                </span>
                 
                 <span class="span--tag">
                   <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" title="微信小程序">
@@ -145,43 +139,70 @@ MathJax = {
                   </a>
                 </span>
                 
+                <span class="span--tag">
+                  <a href="/tags/python/" title="python">
+                    <b>#</b> python
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/" title="个人网站">
+                    <b>#</b> 个人网站
+                  </a>
+                </span>
+                
               </span>
           
       </div>
       <div class="markdown-body">
-        <p>刚刚完成我微信小程序的所有案例，我的微信小程序共有4个<code>Tabbar</code>选项，请看介绍：<br>1.「AI应用」页：包含三个功能，基于<code>CNN</code>的<code>MNIST</code>手写数字识别、基于<code>PoseNet</code>的人体姿态检测以及基于<code>Coco SSD</code>的对象检测；<br>2.「生活服务」页：包含两个功能，基于国内城市名称的天气预报查询以及基于单号的快递信息查询；<br>3.「发现」页：包含两个功能，<code>OCR</code>技术识别身份证、银行卡、驾驶证等以及语音识别；<br>4.「关于作者」页：主要内容为我的个人介绍；</p>
-<p>当我准备在本地预览时，开发者工具显示如下提示信息：<br><img src="https://img-blog.csdnimg.cn/20210207135756342.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70#pic_center"></p>
-<center>图1 - 微信小程序提示信息</center>
-
-<br/>
-
-<p>很明显，我的小程序超过了微信官方限定的大小，在本文中，我将提供两种方法去解决这个问题，第一种方法采用微信官方提供的「分包加载」；第二种方法相比起来简单粗暴，即直接删掉相关包，请看文章。</p>
+        <p>刚刚在完善我书中第七章案例的文档时，需要将训练好的模型存储在服务端，方便小伙伴们来使用该模型，这里我提供三种办法：</p>
+<ol>
+<li>直接从我的个人网站中加载；</li>
+<li>通过<code>python</code>启动一个文件下载服务器；</li>
+<li>使用微信小程序云存储；</li>
+</ol>
+<p>接下来，请看文章。</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li>微信小程序官方文档：<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages.html">https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages.html</a></li>
+<li>Python文档：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/http.server.html?highlight=httpserver">https://docs.python.org/zh-cn/3/library/http.server.html?highlight=httpserver</a></li>
 </ol>
-<h3 id="1-分包加载"><a href="#1-分包加载" class="headerlink" title="1. 分包加载"></a>1. 分包加载</h3><p>「分包加载」需要微信客户端版本大于<code>6.6.0</code>，基础库版本大于<code>1.7.3</code>，开发者工具版本大于<code>1.01.1712150</code>。</p>
-<p>某些情况下，开发者需要将小程序划分成不同的子包，在构建时打包成不同的分包，用户在使用时按需进行加载。</p>
-<p>在构建小程序分包项目时，构建会输出一个或多个分包。每个使用分包小程序必定含有一个主包。所谓的主包，即放置默认启动页面<code>/TabBar</code> 页面，以及一些所有分包都需用到公共资源<code>/JS</code> 脚本；而分包则是根据开发者的配置进行划分。</p>
-<p>在小程序启动时，默认会下载主包并启动主包内页面，当用户进入分包内某个页面时，客户端会把对应分包下载下来，下载完成后再进行展示。</p>
-<p>目前小程序分包大小有以下限制：</p>
-<ol>
-<li>整个小程序所有分包大小不超过 20M</li>
-<li>单个分包/主包大小不能超过 2M</li>
-</ol>
-<p>对小程序进行分包，可以优化小程序首次启动的下载时间，以及在多团队共同开发时可以更好的解耦协作。</p>
-<p>具体使用方法请参考：</p>
-<ol>
-<li>使用分包：<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/basic.html">https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/basic.html</a></li>
-<li>独立分包：<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/independent.html">https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/independent.html</a></li>
-<li>分包预下载：<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/preload.html">https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/preload.html</a></li>
-</ol>
-<h3 id="2-删掉相关包"><a href="#2-删掉相关包" class="headerlink" title="2. 删掉相关包"></a>2. 删掉相关包</h3><p>相比第一种方法，第二种方法就比较简单粗暴了，我们需要对我们整体项目的代码做一次清理，清理掉无关代码，必要时可以删除一些不必要的功能，也可以将本地的部分图片、音视频资源等通过云存储存放起来，这些措施都能帮助我们减小微信小程序项目的大小，经过处理之后，我的微信小程序项目大小减小到了<code>2049KB</code>。</p>
-<p><img src="https://img-blog.csdnimg.cn/2021020714123969.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
-<center>图2 - 微信小程序预览信息提示</center>
-
+<h3 id="1-从我的个人网站加载"><a href="#1-从我的个人网站加载" class="headerlink" title="1. 从我的个人网站加载"></a>1. 从我的个人网站加载</h3><p>为了方便各位小伙伴可以直接使用我训练好的模型，这里我将该模型文件上传至我的网站上，如图所示：<br><img src="https://img-blog.csdnimg.cn/20210207170131269.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图1 - 模型文件信息</center>
 <br/>
 
-<h3 id="3-文章最后"><a href="#3-文章最后" class="headerlink" title="3. 文章最后"></a>3. 文章最后</h3><p>以上就是本文的所有内容，小伙伴们学会了嘛？快去实践一下吧！更多详情请关注我的更多开源作品：<br><strong>1. 微信公众号（hahaCoder）</strong><br><img src="https://img-blog.csdnimg.cn/20210205234148138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<p>大家可以通过如下网址访问该模型文件：<br><a target="_blank" rel="noopener" href="https://www.shipudong.com/otherFiles/DLModels/model.json">https://www.shipudong.com/otherFiles/DLModels/model.json</a></p>
+<h3 id="2-通过Python启动一个文件下载服务器"><a href="#2-通过Python启动一个文件下载服务器" class="headerlink" title="2. 通过Python启动一个文件下载服务器"></a>2. 通过Python启动一个文件下载服务器</h3><p>如果大家自己训练了一个模型，想要将其存放在服务端，但又没有远程服务器的话，这里我推荐第二种方法，即通过<code>Python</code>开启一个文件下载服务器，我们进入到对应的目录下，并执行如下命令：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">python <span class="token operator">-</span>m SimpleHTTPServer<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在Python3中，我们可以使用如下命令：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">python <span class="token operator">-</span>m http<span class="token punctuation">.</span>server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>根据自己电脑上的<code>python</code>版本执行完对应的命令之后，就会在当前目录下开启一个文件下载服务器，默认打开<code>8000</code>端口，此时我们就可以通过<code>IP</code>和端口号来访问该资源文件了。接下来，我们来演示一下具体的步骤：<br><strong>1. 在对应目录下打开终端工具</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210207171330536.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图2 - 目录文件信息</center>
+<br/>
+
+<p><img src="https://img-blog.csdnimg.cn/20210207171128162.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图3 - 终端打开对应文件目录</center>
+<br/>
+
+
+
+<p><strong>2.通过命令开启端口</strong></p>
+<p>接下来，我们通过命令在对应文件目录下开启端口，如图4所示：<br><img src="https://img-blog.csdnimg.cn/20210207171558141.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图4 - 通过命令开启端口</center>
+<br/>
+
+<p>开启成功之后，我们通过 <code>http://localhost:8000/</code>可以访问到如图5所示界面：</p>
+<p><img src="https://img-blog.csdnimg.cn/2021020717100928.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图5 - 文件下载服务器</center>
+<br/>
+
+<h3 id="3-使用微信小程序云存储"><a href="#3-使用微信小程序云存储" class="headerlink" title="3. 使用微信小程序云存储"></a>3. 使用微信小程序云存储</h3><p>最后一种方法最为简单，我们可以借助微信小程序的云存储功能，如图6所示：<br><img src="https://img-blog.csdnimg.cn/20210207172400443.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图6 - 微信小程序云存储存储模型文件</center>
+<br/>
+
+
+
+
+<h3 id="4-文章最后"><a href="#4-文章最后" class="headerlink" title="4. 文章最后"></a>4. 文章最后</h3><p>以上就是本文的所有内容，小伙伴们学会了嘛？快去实践一下吧！更多详情请关注我的更多开源作品：<br><strong>1. 微信公众号（hahaCoder）</strong><br><img src="https://img-blog.csdnimg.cn/20210205234148138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
 <center>图5 - 微信公众号</center>
 <br/>
 
@@ -197,7 +218,7 @@ MathJax = {
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2021/02/06/keras%E8%87%AA%E5%8A%A8%E4%B8%8B%E8%BD%BD%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86&%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AD%98%E6%94%BE%E4%BD%8D%E7%BD%AE/" target="_self">
+              <a href="/2021/02/07/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%88%86%E5%8C%85%E5%8A%A0%E8%BD%BD/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>Prev</span>
               </a>
@@ -206,17 +227,11 @@ MathJax = {
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime" title="Update time"></i>
-              2021-02-07 13:50:50
+              2021-02-07 16:53:50
             </span>
             
                   <span class="post-tags">
                     <i class="iconfont icon-tags" title="Tags"></i>
-                    
-                    <span class="span--tag">
-                      <a href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" title="前端开发">
-                        <b>#</b> 前端开发
-                      </a>
-                    </span>
                     
                     <span class="span--tag">
                       <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" title="微信小程序">
@@ -224,15 +239,22 @@ MathJax = {
                       </a>
                     </span>
                     
+                    <span class="span--tag">
+                      <a href="/tags/python/" title="python">
+                        <b>#</b> python
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/" title="个人网站">
+                        <b>#</b> 个人网站
+                      </a>
+                    </span>
+                    
                   </span>
               
           </div>
           <div class="post-foot-prev">
-            
-              <a href="/2021/02/07/%E5%B0%86%E8%AE%AD%E7%BB%83%E5%A5%BD%E7%9A%84%E6%A8%A1%E5%9E%8B%E6%96%87%E4%BB%B6%E4%BF%9D%E5%AD%98%E5%9C%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E4%B8%89%E7%A7%8D%E5%8A%9E%E6%B3%95/" target="_self">
-                <span>Next</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
             
           </div>
         </div>
@@ -242,7 +264,7 @@ MathJax = {
   <div class="post-catalog" id="catalog">
     <div class="title">Contents</div>
     <div class="catalog-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%86%E5%8C%85%E5%8A%A0%E8%BD%BD"><span class="toc-text">1. 分包加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%88%A0%E6%8E%89%E7%9B%B8%E5%85%B3%E5%8C%85"><span class="toc-text">2. 删掉相关包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%96%87%E7%AB%A0%E6%9C%80%E5%90%8E"><span class="toc-text">3. 文章最后</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BB%8E%E6%88%91%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E5%8A%A0%E8%BD%BD"><span class="toc-text">1. 从我的个人网站加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%80%9A%E8%BF%87Python%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">2. 通过Python启动一个文件下载服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E5%AD%98%E5%82%A8"><span class="toc-text">3. 使用微信小程序云存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%96%87%E7%AB%A0%E6%9C%80%E5%90%8E"><span class="toc-text">4. 文章最后</span></a></li></ol></li></ol>
     </div>
   </div>
 
