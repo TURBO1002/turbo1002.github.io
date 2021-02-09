@@ -11,7 +11,7 @@
   
   <title>
     
-      Tag 
+      优雅的在Pycharm查看JSON文件 
       
       
       |
@@ -112,21 +112,191 @@ MathJax = {
 </script>
 
 
-  <!-- 标签页 url形式：https://yoursite/tags/ -->
-  <div class="container tag-index">
-    <div>
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Google%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%A9%E5%B1%95%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91/" rel="tag">Google浏览器扩展程序开发</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pycharm%E6%93%8D%E4%BD%9C/" rel="tag">Pycharm操作</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tensorflow/" rel="tag">tensorflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/" rel="tag">个人网站</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BC%98%E8%B4%A8%E5%BC%80%E6%BA%90%E5%88%86%E4%BA%AB/" rel="tag">优质开源分享</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/" rel="tag">前端开发</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" rel="tag">微信小程序</a><span class="tag-list-count">2</span></li></ul>
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">优雅的在Pycharm查看JSON文件</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="Update time"></i>
+          2021-02-09 17:12:50
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="Tags"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/python/" title="python">
+                    <b>#</b> python
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/Pycharm%E6%93%8D%E4%BD%9C/" title="Pycharm操作">
+                    <b>#</b> Pycharm操作
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>当我们通过爬虫程序获取到来自服务端返回的<code>JSON</code>文件时，往往会在控制台中看到如图所示画面：<br><img src="https://img-blog.csdnimg.cn/20210209172011932.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图1 - 控制台的json文件</center>
+<br/>
+
+<p>这种格式不利于我们去获取到对应<code>JSON</code>文件中的值，因此我们需要将其格式化，这里我们提供三种方法：</p>
+<ol>
+<li>使用「show as JSON」插件</li>
+<li>使用第三方网站</li>
+<li>使用<code>Google</code>插件</li>
+</ol>
+<h3 id="1-使用「show-as-JSON」插件"><a href="#1-使用「show-as-JSON」插件" class="headerlink" title="1. 使用「show as JSON」插件"></a>1. 使用「show as JSON」插件</h3><p>为了我们更加方便直接的在<code>Pycharm</code>控制台中查看返回的<code>JSON</code>文件，我们需要安装「show as JSON」插件，请看安装步骤：</p>
+<ol>
+<li>找到「Preferences」界面<br><img src="https://img-blog.csdnimg.cn/20210209172502414.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></li>
+</ol>
+<center>图2 - Preferences信息</center>
+<br/>
+
+<ol start="2">
+<li>安装插件<br>进入到「Preferences」界面之后，我们选中「Plugins」选项，并输入关键词「show As」，当查询到相关结果之后，我们点击「Install」按钮即可完成该插件的安装，如图所示：<br><img src="https://img-blog.csdnimg.cn/20210209172702786.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"><center>图3 - 安装插件</center>
+<br/>
+
+</li>
+</ol>
+<p>安装完成之后，我们就可以使用了，我们在控制台选中程序输出的<code>JSON</code>文件，并鼠标右键选中「show As JSON」，即可看到如图所示信息：<br><img src="https://img-blog.csdnimg.cn/20210209173037936.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图4 - 插件使用方法</center>
+<br/>
+
+<p>最终所得效果如图所示：<br><img src="https://img-blog.csdnimg.cn/20210209173153497.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图5 - 效果展示</center>
+<br/>
+
+<h3 id="2-使用第三方网站"><a href="#2-使用第三方网站" class="headerlink" title="2. 使用第三方网站"></a>2. 使用第三方网站</h3><p>我们进入到如下网址，<a target="_blank" rel="noopener" href="http://www.bejson.com/">http://www.bejson.com/</a><br><img src="https://img-blog.csdnimg.cn/20210209173402455.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图6 - 第三方网站官网</center>
+<br/>
+
+<p>接着，我们在输入框中输入需要转化的<code>JSON</code>文件并点击相应的按钮即可完成转换，如图所示：<br><img src="https://img-blog.csdnimg.cn/20210209173530161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图7 - 第三方网站官网转换结果展示</center>
+<br/>
+
+<h3 id="3-使用Google插件"><a href="#3-使用Google插件" class="headerlink" title="3. 使用Google插件"></a>3. 使用<code>Google</code>插件</h3><p>最后一种方法是为了方便我们在网页中查看<code>JSON</code>文件，<br><img src="https://img-blog.csdnimg.cn/20210209173701856.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图8 - JSON Viewer</center>
+<br/>
+
+<p>效果如图所示：<br><img src="https://img-blog.csdnimg.cn/20210209173930385.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图9 - JSON Viewer效果展示</center>
+<br/>
+
+
+
+<h3 id="4-文章最后"><a href="#4-文章最后" class="headerlink" title="4. 文章最后"></a>4. 文章最后</h3><p>以上就是本文的所有内容，小伙伴们学会了嘛？快去实践一下吧！更多详情请关注我的更多开源作品：<br><strong>1. 微信公众号（hahaCoder）</strong><br><img src="https://img-blog.csdnimg.cn/20210205234148138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图5 - 微信公众号</center>
+<br/>
+
+<p><strong>2. 微信小程序（hahaAI）</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210205234039346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图6 - 微信小程序</center>
+<br/>
+
+<p><strong>3. Github</strong><br>链接地址：<a target="_blank" rel="noopener" href="https://github.com/TURBO1002">https://github.com/TURBO1002</a></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/02/07/%E5%B0%86%E8%AE%AD%E7%BB%83%E5%A5%BD%E7%9A%84%E6%A8%A1%E5%9E%8B%E6%96%87%E4%BB%B6%E4%BF%9D%E5%AD%98%E5%9C%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E4%B8%89%E7%A7%8D%E5%8A%9E%E6%B3%95/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="Update time"></i>
+              2021-02-09 17:12:50
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="Tags"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/python/" title="python">
+                        <b>#</b> python
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/Pycharm%E6%93%8D%E4%BD%9C/" title="Pycharm操作">
+                        <b>#</b> Pycharm操作
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div class="post-catalog" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8%E3%80%8Cshow-as-JSON%E3%80%8D%E6%8F%92%E4%BB%B6"><span class="toc-text">1. 使用「show as JSON」插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E7%BD%91%E7%AB%99"><span class="toc-text">2. 使用第三方网站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8Google%E6%8F%92%E4%BB%B6"><span class="toc-text">3. 使用Google插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%96%87%E7%AB%A0%E6%9C%80%E5%90%8E"><span class="toc-text">4. 文章最后</span></a></li></ol>
     </div>
   </div>
-  
 
   
+<script src="/js/catalog.js"></script>
 
-  
 
-  
 
-  
+
+    
+      <div class="comments-container">
+        
+
+
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  <div id="vcomments"></div>
+
+  <script>
+    new Valine({
+      el: '#vcomments',
+      appId: 'o0mB8Lk91UNsopY04u0Txrfz-gzGzoHsz',
+      appKey: '9o0SPf6H8r93Xqp1kaprRmSB',
+      placeholder: '你好，我是石璞东!',
+      avatar: 'retro',
+      lang: 'en'
+    })
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
 
         <div class="footer">
   <div class="social">
