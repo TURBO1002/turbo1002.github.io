@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="hahaCoder" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      canvas详解 
+      
+      
+      |
+    
+     石璞东
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  <!-- jquery3.3.1 -->
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- fancybox -->
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <script async src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js"></script>
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">你好，我是石璞东（hahaWebsite.）</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">主页</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">历史文章</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">标签</a>
+        </li>
+      
+        <li class="nav-item" data-path="/DLModels/">
+          <a href="/DLModels/">深度学习模型</a>
+        </li>
+      
+        <li class="nav-item" data-path="/demo/">
+          <a href="/demo/">案例展示</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">关于作者</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+<!-- LaTex Display -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">canvas详解</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="Update time"></i>
+          2021-03-02 15:00:50
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="Tags"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+                    <b>#</b> 前端
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/JavaScript/" title="JavaScript">
+                    <b>#</b> JavaScript
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/HTML5/" title="HTML5">
+                    <b>#</b> HTML5
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>在我书的第六章中有一个关于<code>MNIST</code>手写数字的例子，当数据集加载完成之后，用户可以在<code>&lt;canvas/&gt;</code>上输入手写数字，点击「预测」按钮之后，浏览器会弹出经模型预测之后的结果；在我书的第九章和第十章中，分别有关于目标检测和人体姿态检测的案例，当关键点的得分符合一定要求时，会通过<code>&lt;canvas/&gt;</code>将关键部分绘制出来，请看效果：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210302151927569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图1 - MNIST手写数字案例</center>
+<br/>
+
+<p><img src="https://img-blog.csdnimg.cn/20210302151641122.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图2 - 人体姿态检测案例</center>
+<br/>
+
+<p><img src="https://img-blog.csdnimg.cn/20210302151811904.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图3 - 目标检测案例</center>
+
+
+<p>接下来，我们将在本文中详细讲解一下上述三个模块均用到的一个技术<code>&lt;canvas/&gt;</code>。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>MDN Web Docs：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API">https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API</a></li>
+</ol>
+<h3 id="1-canvas概述"><a href="#1-canvas概述" class="headerlink" title="1. canvas概述"></a>1. canvas概述</h3><h3 id="2-canvas入门"><a href="#2-canvas入门" class="headerlink" title="2. canvas入门"></a>2. canvas入门</h3><h3 id="3-设置canvas绘制状态"><a href="#3-设置canvas绘制状态" class="headerlink" title="3. 设置canvas绘制状态"></a>3. 设置canvas绘制状态</h3><h3 id="4-保存和恢复canvas绘制状态"><a href="#4-保存和恢复canvas绘制状态" class="headerlink" title="4. 保存和恢复canvas绘制状态"></a>4. 保存和恢复canvas绘制状态</h3><h3 id="5-使用canvas绘制图像"><a href="#5-使用canvas绘制图像" class="headerlink" title="5. 使用canvas绘制图像"></a>5. 使用canvas绘制图像</h3><h3 id="6-使用canvas绘制图像"><a href="#6-使用canvas绘制图像" class="headerlink" title="6. 使用canvas绘制图像"></a>6. 使用canvas绘制图像</h3><h3 id="7-使用路径绘制图形"><a href="#7-使用路径绘制图形" class="headerlink" title="7. 使用路径绘制图形"></a>7. 使用路径绘制图形</h3><h3 id="8-绘制圆弧"><a href="#8-绘制圆弧" class="headerlink" title="8. 绘制圆弧"></a>8. 绘制圆弧</h3><h3 id="9-绘制贝塞尔曲线"><a href="#9-绘制贝塞尔曲线" class="headerlink" title="9. 绘制贝塞尔曲线"></a>9. 绘制贝塞尔曲线</h3><h3 id="10-创建剪辑区域"><a href="#10-创建剪辑区域" class="headerlink" title="10.创建剪辑区域"></a>10.创建剪辑区域</h3><h3 id="11-绘制文本"><a href="#11-绘制文本" class="headerlink" title="11.绘制文本"></a>11.绘制文本</h3><h3 id="12-你画我猜（MNIST手写数字版）"><a href="#12-你画我猜（MNIST手写数字版）" class="headerlink" title="12.你画我猜（MNIST手写数字版）"></a>12.你画我猜（MNIST手写数字版）</h3><h3 id="13-绘制关键点（人体姿态检测、目标识别）"><a href="#13-绘制关键点（人体姿态检测、目标识别）" class="headerlink" title="13.绘制关键点（人体姿态检测、目标识别）"></a>13.绘制关键点（人体姿态检测、目标识别）</h3><h3 id="14-文章最后"><a href="#14-文章最后" class="headerlink" title="14.文章最后"></a>14.文章最后</h3><p>以上就是本文的所有内容，小伙伴们学会了嘛？快去实践一下吧！更多详情请关注我的更多开源作品：<br><strong>1. 微信公众号（hahaCoder）</strong><br><img src="https://img-blog.csdnimg.cn/20210205234148138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图9 - 微信公众号</center>
+<br/>
+
+<p><strong>2. 微信小程序（hahaAI）</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210205234039346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图10 - 微信小程序</center>
+<br/>
+
+<p><strong>3. Github</strong><br>链接地址：<a target="_blank" rel="noopener" href="https://github.com/TURBO1002">https://github.com/TURBO1002</a></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/02/24/%E5%A5%BD%E7%89%A9%E6%8E%A8%E8%8D%90/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="Update time"></i>
+              2021-03-02 15:00:50
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="Tags"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+                        <b>#</b> 前端
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/JavaScript/" title="JavaScript">
+                        <b>#</b> JavaScript
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/HTML5/" title="HTML5">
+                        <b>#</b> HTML5
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div class="post-catalog" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-canvas%E6%A6%82%E8%BF%B0"><span class="toc-text">1. canvas概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-canvas%E5%85%A5%E9%97%A8"><span class="toc-text">2. canvas入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%AE%BE%E7%BD%AEcanvas%E7%BB%98%E5%88%B6%E7%8A%B6%E6%80%81"><span class="toc-text">3. 设置canvas绘制状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BF%9D%E5%AD%98%E5%92%8C%E6%81%A2%E5%A4%8Dcanvas%E7%BB%98%E5%88%B6%E7%8A%B6%E6%80%81"><span class="toc-text">4. 保存和恢复canvas绘制状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BD%BF%E7%94%A8canvas%E7%BB%98%E5%88%B6%E5%9B%BE%E5%83%8F"><span class="toc-text">5. 使用canvas绘制图像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E4%BD%BF%E7%94%A8canvas%E7%BB%98%E5%88%B6%E5%9B%BE%E5%83%8F"><span class="toc-text">6. 使用canvas绘制图像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E4%BD%BF%E7%94%A8%E8%B7%AF%E5%BE%84%E7%BB%98%E5%88%B6%E5%9B%BE%E5%BD%A2"><span class="toc-text">7. 使用路径绘制图形</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E7%BB%98%E5%88%B6%E5%9C%86%E5%BC%A7"><span class="toc-text">8. 绘制圆弧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E7%BB%98%E5%88%B6%E8%B4%9D%E5%A1%9E%E5%B0%94%E6%9B%B2%E7%BA%BF"><span class="toc-text">9. 绘制贝塞尔曲线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E5%88%9B%E5%BB%BA%E5%89%AA%E8%BE%91%E5%8C%BA%E5%9F%9F"><span class="toc-text">10.创建剪辑区域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E7%BB%98%E5%88%B6%E6%96%87%E6%9C%AC"><span class="toc-text">11.绘制文本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E4%BD%A0%E7%94%BB%E6%88%91%E7%8C%9C%EF%BC%88MNIST%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E7%89%88%EF%BC%89"><span class="toc-text">12.你画我猜（MNIST手写数字版）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E7%BB%98%E5%88%B6%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%88%E4%BA%BA%E4%BD%93%E5%A7%BF%E6%80%81%E6%A3%80%E6%B5%8B%E3%80%81%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB%EF%BC%89"><span class="toc-text">13.绘制关键点（人体姿态检测、目标识别）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E6%96%87%E7%AB%A0%E6%9C%80%E5%90%8E"><span class="toc-text">14.文章最后</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  <div id="vcomments"></div>
+
+  <script>
+    new Valine({
+      el: '#vcomments',
+      appId: 'o0mB8Lk91UNsopY04u0Txrfz-gzGzoHsz',
+      appKey: '9o0SPf6H8r93Xqp1kaprRmSB',
+      placeholder: '你好，我是石璞东!',
+      avatar: 'retro',
+      lang: 'en'
+    })
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        <div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://github.com/TURBO1002">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="email" href="">
+            <i class="iconfont icon-envelope"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="facebook" href="">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="twitter" href="">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="wechat" href="">
+            <i class="iconfont icon-wechat"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="weibo" target="_blank" rel="noopener" href="https://weibo.com/6217165734/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1">
+            <i class="iconfont icon-weibo"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="rss" href="/atom.xml">
+            <i class="iconfont icon-rss"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © Oranges 2020</a>
+        
+    </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://www.shipudong.com">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="back-to-top hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+      
+  <div class="search-icon" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+    </div>
+  </body>
+</html>

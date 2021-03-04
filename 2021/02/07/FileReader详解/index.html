@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="hahaCoder" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      FileReader详解 
+      
+      
+      |
+    
+     石璞东
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  <!-- jquery3.3.1 -->
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- fancybox -->
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <script async src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js"></script>
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">你好，我是石璞东（hahaWebsite.）</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">主页</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">历史文章</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">标签</a>
+        </li>
+      
+        <li class="nav-item" data-path="/DLModels/">
+          <a href="/DLModels/">深度学习模型</a>
+        </li>
+      
+        <li class="nav-item" data-path="/demo/">
+          <a href="/demo/">案例展示</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">关于作者</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+<!-- LaTex Display -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">FileReader详解</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="Update time"></i>
+          2021-02-07 15:20:50
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="Tags"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E6%89%A9%E5%B1%95%E7%A8%8B%E5%BA%8F/" title="扩展程序">
+                    <b>#</b> 扩展程序
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+                    <b>#</b> 前端
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/JavaScript/" title="JavaScript">
+                    <b>#</b> JavaScript
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/" title="文件处理">
+                    <b>#</b> 文件处理
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>我在<code>Google Chrome Web Store</code>上发布了一个案例<code>hahaOCR</code>，该扩展程序可以帮助用户识别出图片中的文字信息，并以文本形式显示，该扩展程序支持用户通过文件上传按钮上传图片、也支持拖拽上传，请看演示效果：<br><img src="https://img-blog.csdnimg.cn/20210301172920854.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70#pic_center"></p>
+<center>图1 - 测试图片</center>
+<br/>
+
+<p><img src="https://img-blog.csdnimg.cn/20210301172831696.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图2 - 测试效果</center>
+
+<p>接下来，我们将在本文中详细讲解该案例所涉及的文件（图片）处理模块。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>MDN Web Docs：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader">https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader</a></li>
+</ol>
+<h3 id="1-FileReader概述"><a href="#1-FileReader概述" class="headerlink" title="1. FileReader概述"></a>1. FileReader概述</h3><p>该对象允许<code>Web</code>应用程序异步读取存储在用户计算机上的文件（或原始数据缓冲区）的内容，使用<code>File</code>或<code>Blob</code>对象指定要读取的文件或数据。其中<code>File</code>对象可以是来自用户在一个<code>&lt;input/&gt;</code>元素上选择文件后返回的<code>FileList</code>对象，也可以是来自拖拽操作生成的<code>DataTransfer</code>对象，还可以是来自一个<code>HTMLCanvasElement</code>上执行     <code>mozGetAsFile()</code>方法后返回的结果；<code>Blob</code> 对象表示一个不可变、原始数据的类文件对象，它的数据可以按文本或二进制的格式进行读取，也可以转换成 <code>ReadableStream</code>来用于数据操作，<code>Blob</code> 表示的不一定是<code>JavaScript</code>原生格式的数据，<code>File</code> 接口基于<code>Blob</code>，继承了<code> Blob</code> 的功能并将其扩展使其支持用户系统上的文件。</p>
+<h3 id="2-FileReader属性"><a href="#2-FileReader属性" class="headerlink" title="2. FileReader属性"></a>2. FileReader属性</h3><p>为了更加直观的解释<code>FileReader</code>的三个属性，我们来看一段简单的代码：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>file<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>file<span class="token punctuation">"</span></span> <span class="token attr-name">onchange</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>readFile(this.files[0])<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">window<span class="token punctuation">.</span><span class="token function-variable function">readFile</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">file</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+   console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span>
+   console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>type<span class="token punctuation">)</span>
+   <span class="token keyword">var</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+   console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>reader<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们定义了一个文件上传按钮，我们只对用户上传的第一个文件进行处理，当用户完成上传操作之后，我们来看一下控制台输出的信息：<br><img src="https://img-blog.csdnimg.cn/20210301155250473.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图4 - FileReader属性</center>
+
+<p>我们在上述代码中指定了三个<code>console</code>，第一个<code>console</code>输出了用户所上传文件的相关信息；第二个<code>console</code>输出了用户所上传文件的<code>type</code>；第三个<code>console</code>输出了<code>FileReader</code>实例的相关信息，请看解释：</p>
+<ul>
+<li><p>FileReader.error(只读属性)<br>该属性表示在读取文件时发生的错误，图1中显示<code>error</code>值为<code>null</code>，表示在读取用户所上传文件时没有出错。</p>
+</li>
+<li><p>FileReader.readyState（只读属性）<br>该属性表示<code>FileReader</code>状态的数字，请看取值：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>常量名</th>
+<th>值</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>EMPTY</td>
+<td>0</td>
+<td>还没有加载任何数据</td>
+</tr>
+<tr>
+<td>LOADING</td>
+<td>1</td>
+<td>数据正在被加载</td>
+</tr>
+<tr>
+<td>DONE</td>
+<td>2</td>
+<td>已完成全部的读取请求</td>
+</tr>
+</tbody></table>
+<p>图1中显示<code>readyState</code>值为<code>0</code>，因为我们并没有加载任何数据，尽管我们完成了图片的上传，但我们并没有指定任何方法来读取该图片文件。</p>
+<ul>
+<li>FileReader.result（只读属性）<br>该属性表示文件的内容，仅在读取操作完成之后才有效，数据的格式取决于使用哪个方法来启动读取操作，图1中<code>result</code>值为<code>null</code>，因为我们并没有指定读取当前所上传文件的方法，接下来，我们通过<code>FileReader.readAsDataURL()</code>方法来读取一下该图片，请看代码：<pre class="line-numbers language-js" data-language="js"><code class="language-js">window<span class="token punctuation">.</span><span class="token function-variable function">readFile</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">file</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">var</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>reader<span class="token punctuation">)</span>
+  reader<span class="token punctuation">.</span><span class="token function">readAsDataURL</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span>
+  reader<span class="token punctuation">.</span><span class="token function-variable function">onload</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+请看控制台信息：<br><img src="https://img-blog.csdnimg.cn/2021030116202628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></li>
+</ul>
+<center>图5 - readAsDataURL方法</center>
+
+<p>上述代码中，我们通过<code>FileReader.readDataAsURL()</code>方法读取用户所上传的图片文件，当读取完成后，其<code>result</code>属性中将包含一个<code>data:URL</code>格式的<code>Base64</code>字符串以表示所读取文件的内容，关于读取用户所上传文件的更多方法，请参考第三小节。</p>
+<h3 id="3-FileReader方法"><a href="#3-FileReader方法" class="headerlink" title="3. FileReader方法"></a>3. FileReader方法</h3><p>接下来，我们来看一下<code>FileReader</code>接口的几个方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FileReader.abort()</td>
+<td>终止读取操作，在返回时，该属性的值为<code>DONE</code></td>
+</tr>
+<tr>
+<td>FileReader.readAsArrayBuffer()</td>
+<td>开始读取指定的<code>Blob</code>中的内容，一旦完成，<code>result</code> 属性中保存的是被读取文件的<code>ArrayBuffer</code>数据对象</td>
+</tr>
+<tr>
+<td>FileReader.readAsBinaryString()</td>
+<td>开始读取指定的<code>Blob</code>中的内容，一旦完成，<code>result</code>属性中将包含所读取文件的原始二进制数据</td>
+</tr>
+<tr>
+<td>FileReader.readAsDataURL()</td>
+<td>开始读取指定的<code>Blob</code>中的内容，一旦完成，<code>result</code>属性中将包含一个<code>data:URL</code>格式的<code>Base64</code>字符串以表示所读取文件的内容</td>
+</tr>
+<tr>
+<td>FileReader.readAsText()</td>
+<td>开始读取指定的<code>Blob</code>中的内容，一旦完成，<code>result</code>属性中将包含一个字符串以表示所读取的文件内容</td>
+</tr>
+</tbody></table>
+<p>如上表所示，对于不同的文件我们可以采取不同的方法来完成读取操作，接下来，我们通过<code>FileReader.readAsText()</code>方法来读取一个文本，请看代码：<br><img src="https://img-blog.csdnimg.cn/20210301180129883.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图6 - 文本内容</center>
+
+<pre class="line-numbers language-js" data-language="js"><code class="language-js">window<span class="token punctuation">.</span><span class="token function-variable function">readFile</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">file</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+   <span class="token keyword">var</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+   console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>reader<span class="token punctuation">)</span>
+   reader<span class="token punctuation">.</span><span class="token function">readAsText</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span>
+   reader<span class="token punctuation">.</span><span class="token function-variable function">onload</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">res</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+       console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+   <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>请看演示效果：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210301164027990.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图7 - readAsText方法</center>
+
+
+<h3 id="4-FileReader事件"><a href="#4-FileReader事件" class="headerlink" title="4. FileReader事件"></a>4. FileReader事件</h3><p>我们继续来看<code>FileReader</code>接口的几个事件处理方法：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FileReader.onabort()</td>
+<td>处理<code>abort</code>事件，该事件在读取操作被中断时触发</td>
+</tr>
+<tr>
+<td>FileReader.onerror()</td>
+<td>处理<code>error</code>事件，该事件在读取操作发生错误时触发</td>
+</tr>
+<tr>
+<td>FileReader.onload</td>
+<td>处理<code>load</code>事件，该事件在读取操作完成时触发</td>
+</tr>
+<tr>
+<td>FileReader.onloadstart</td>
+<td>处理<code>loadstart</code>事件，该事件在读取操作开始时触发</td>
+</tr>
+<tr>
+<td>FileReader.onloadend</td>
+<td>处理<code>loadend</code>事件，该事件在读取操作结束时（成功或失败）触发</td>
+</tr>
+<tr>
+<td>FileReader.onprogress</td>
+<td>处理<code>progress</code>事件，该事件在读取<code>Blob</code>时触发</td>
+</tr>
+</tbody></table>
+<p>如上表所示，我们可以在用户上传文件的不同阶段指定不同的处理逻辑，请看代码：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>example<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>file-select<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>avatar<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Choose a profile picture:<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>file<span class="token punctuation">"</span></span>
+               <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>avatar<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>avatar<span class="token punctuation">"</span></span>
+               <span class="token attr-name">accept</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>image/png, image/jpeg<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>preview<span class="token punctuation">"</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>200<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Image preview...<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>event-log<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span>Event log:<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>textarea</span> <span class="token attr-name">readonly</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>event-log-contents<span class="token punctuation">"</span></span> <span class="token attr-name">rows</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>20<span class="token punctuation">"</span></span> <span class="token attr-name">cols</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>50<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>textarea</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们定义了一个文件上传按钮，具体来说是图片上传按钮；接着我们还定义了一个<code>&lt;img/&gt;</code>标签，其<code>src</code>属性值为空；最后，我们定义了一个文本输入框，用来显示不同事件处理程序读取图片文件的相关信息。</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">const</span> fileInput <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'input[type="file"]'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> preview <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'img.preview'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> eventLog <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'.event-log-contents'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">handleEvent</span><span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span>
+    eventLog<span class="token punctuation">.</span>textContent <span class="token operator">=</span> eventLog<span class="token punctuation">.</span>textContent <span class="token operator">+</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>event<span class="token punctuation">.</span>type<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string">: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>event<span class="token punctuation">.</span>loaded<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token string"> bytes transferred\n</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>event<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">"load"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        preview<span class="token punctuation">.</span>src <span class="token operator">=</span> reader<span class="token punctuation">.</span>result<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">addListeners</span><span class="token punctuation">(</span><span class="token parameter">reader</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    reader<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'loadstart'</span><span class="token punctuation">,</span> handleEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    reader<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'load'</span><span class="token punctuation">,</span> handleEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    reader<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'loadend'</span><span class="token punctuation">,</span> handleEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    reader<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'progress'</span><span class="token punctuation">,</span> handleEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    reader<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'error'</span><span class="token punctuation">,</span> handleEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    reader<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'abort'</span><span class="token punctuation">,</span> handleEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">handleSelected</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    eventLog<span class="token punctuation">.</span>textContent <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> selectedFile <span class="token operator">=</span> fileInput<span class="token punctuation">.</span>files<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>selectedFile<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">addListeners</span><span class="token punctuation">(</span>reader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reader<span class="token punctuation">.</span><span class="token function">readAsDataURL</span><span class="token punctuation">(</span>selectedFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+fileInput<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> handleSelected<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们仅对用户上传的第一个图片文件进行处理（通过<code>readAsDataURL</code>方法读取）；我们还通过<code>EventTarget.addEventListener</code>方法将<code>FileReader</code>指定的6种监听器（事件处理程序）注册到<code>reader</code>上；最后当触发<code>load</code>事件时，将读取成功之后的内容，即<code>data:URL</code>格式的<code>Base64</code>字符串赋值给空<code>&lt;img/&gt;</code>标签的<code>src</code>属性，并最终显示在页面中，请看演示效果：<br><img src="https://img-blog.csdnimg.cn/20210301171621824.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图8 - FileReader事件处理程序演示</center>
+
+
+<h3 id="5-案例实战"><a href="#5-案例实战" class="headerlink" title="5. 案例实战"></a>5. 案例实战</h3><p>最后，我们来看一下本文最开始提到的<code>hahaOCR</code>案例中的文件处理模块，实现该逻辑功能的思路其实很简单：用户通过按钮或拖拽操作上传图片，上传成功之后调用接口将图片中的文字信息显示在<code>&lt;textarea/&gt;</code>中，接下来，我们来看一下实现该功能的代码：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token comment">//此处是手动选择文件</span>
+<span class="token function">$</span><span class="token punctuation">(</span><span class="token string">'#input'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">change</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    event<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> filesToUpload <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'input'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>files<span class="token punctuation">;</span>
+    <span class="token keyword">var</span> img_file <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> filesToUpload<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">var</span> file <span class="token operator">=</span> filesToUpload<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">image\/\w+</span><span class="token regex-delimiter">/</span></span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span>type<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> file <span class="token operator">!=</span> <span class="token string">"undefined"</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            img_file<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">var</span> reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> AllowImgFileSize <span class="token operator">=</span> <span class="token number">2100000</span><span class="token punctuation">;</span> <span class="token comment">//上传图片最大值(单位字节)（ 2 M = 2097152 B ）超过2M上传失败</span>
+    <span class="token keyword">var</span> imgUrlBase64<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>img_file<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//将文件以Data URL形式读入页面</span>
+        imgUrlBase64 <span class="token operator">=</span> reader<span class="token punctuation">.</span><span class="token function">readAsDataURL</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reader<span class="token punctuation">.</span><span class="token function-variable function">onload</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>AllowImgFileSize <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> AllowImgFileSize <span class="token operator">&lt;</span> reader<span class="token punctuation">.</span>result<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token function">alert</span><span class="token punctuation">(</span> <span class="token string">'上传失败，请上传不大于2M的图片！'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+                $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+                    type<span class="token operator">:</span> <span class="token string">'post'</span><span class="token punctuation">,</span>
+                    url<span class="token operator">:</span> <span class="token string">'***'</span><span class="token punctuation">,</span> <span class="token comment">//这里是数据请求接口</span>
+                    dataType<span class="token operator">:</span> <span class="token string">'json'</span><span class="token punctuation">,</span>
+                    data<span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+                        <span class="token string">"showapi_appid"</span><span class="token operator">:</span> <span class="token string">'***'</span><span class="token punctuation">,</span> <span class="token comment">//这里需要改成自己的appid</span>
+                        <span class="token string">"showapi_sign"</span><span class="token operator">:</span> <span class="token string">'***'</span><span class="token punctuation">,</span>  <span class="token comment">//这里需要改成自己的应用的密钥secret</span>
+                        <span class="token string">"base64"</span><span class="token operator">:</span>reader<span class="token punctuation">.</span>result<span class="token punctuation">,</span>
+                    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                    <span class="token function-variable function">error</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">XmlHttpRequest<span class="token punctuation">,</span> textStatus<span class="token punctuation">,</span> errorThrown</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                        <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">"操作失败!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                    <span class="token function-variable function">success</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">result</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                        <span class="token keyword">var</span> res <span class="token operator">=</span> result<span class="token punctuation">.</span>showapi_res_body<span class="token punctuation">.</span>texts<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+                        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+                        <span class="token function">$</span><span class="token punctuation">(</span><span class="token string">"#exampleFormControlTextarea1"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+                    <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    hahaOCR<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span><span class="token function">getImageFile</span><span class="token punctuation">(</span>img_file<span class="token punctuation">,</span> filesToUpload<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们限定了用户所上传图片文件的大小，并在文件上传成功时调用接口来对所上传的图片文件进行识别，识别成功之后，将图片中文字信息显示在<code>&lt;textarea/&gt;</code>中。</p>
+<h3 id="6-文章最后"><a href="#6-文章最后" class="headerlink" title="6. 文章最后"></a>6. 文章最后</h3><p>以上就是本文的所有内容，小伙伴们学会了嘛？快去实践一下吧！更多详情请关注我的更多开源作品：<br><strong>1. 微信公众号（hahaCoder）</strong><br><img src="https://img-blog.csdnimg.cn/20210205234148138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图9 - 微信公众号</center>
+<br/>
+
+<p><strong>2. 微信小程序（hahaAI）</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210205234039346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图10 - 微信小程序</center>
+<br/>
+
+<p><strong>3. Github</strong><br>链接地址：<a target="_blank" rel="noopener" href="https://github.com/TURBO1002">https://github.com/TURBO1002</a></p>
+<p>西安建筑科技大学硕士研究生，师从吴萌教授，人民邮电出版社签约作者，<a target="_blank" rel="noopener" href="http://www.shipudong.com网站站长,hahaai微信小程序开发者,hahacoder微信公众号号主/">www.shipudong.com网站站长，hahaAI微信小程序开发者，hahaCoder微信公众号号主</a></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/02/07/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%88%86%E5%8C%85%E5%8A%A0%E8%BD%BD/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="Update time"></i>
+              2021-02-07 15:20:50
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="Tags"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E6%89%A9%E5%B1%95%E7%A8%8B%E5%BA%8F/" title="扩展程序">
+                        <b>#</b> 扩展程序
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+                        <b>#</b> 前端
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/JavaScript/" title="JavaScript">
+                        <b>#</b> JavaScript
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/" title="文件处理">
+                        <b>#</b> 文件处理
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2021/02/07/%E5%B0%86%E8%AE%AD%E7%BB%83%E5%A5%BD%E7%9A%84%E6%A8%A1%E5%9E%8B%E6%96%87%E4%BB%B6%E4%BF%9D%E5%AD%98%E5%9C%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%9A%84%E4%B8%89%E7%A7%8D%E5%8A%9E%E6%B3%95/" target="_self">
+                <span>Next</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div class="post-catalog" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-FileReader%E6%A6%82%E8%BF%B0"><span class="toc-text">1. FileReader概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-FileReader%E5%B1%9E%E6%80%A7"><span class="toc-text">2. FileReader属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-FileReader%E6%96%B9%E6%B3%95"><span class="toc-text">3. FileReader方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-FileReader%E4%BA%8B%E4%BB%B6"><span class="toc-text">4. FileReader事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%A1%88%E4%BE%8B%E5%AE%9E%E6%88%98"><span class="toc-text">5. 案例实战</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%96%87%E7%AB%A0%E6%9C%80%E5%90%8E"><span class="toc-text">6. 文章最后</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  <div id="vcomments"></div>
+
+  <script>
+    new Valine({
+      el: '#vcomments',
+      appId: 'o0mB8Lk91UNsopY04u0Txrfz-gzGzoHsz',
+      appKey: '9o0SPf6H8r93Xqp1kaprRmSB',
+      placeholder: '你好，我是石璞东!',
+      avatar: 'retro',
+      lang: 'en'
+    })
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        <div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://github.com/TURBO1002">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="email" href="">
+            <i class="iconfont icon-envelope"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="facebook" href="">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="twitter" href="">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="wechat" href="">
+            <i class="iconfont icon-wechat"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="weibo" target="_blank" rel="noopener" href="https://weibo.com/6217165734/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1">
+            <i class="iconfont icon-weibo"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="rss" href="/atom.xml">
+            <i class="iconfont icon-rss"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © Oranges 2020</a>
+        
+    </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://www.shipudong.com">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="back-to-top hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+      
+  <div class="search-icon" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+    </div>
+  </body>
+</html>
