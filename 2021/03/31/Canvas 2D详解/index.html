@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="hahaCoder" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      Canvas 2D详解 
+      
+      
+      |
+    
+     石璞东
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+  <!-- jquery3.3.1 -->
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+  <!-- fancybox -->
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <script async src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js"></script>
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">你好，我是石璞东（hahaWebsite.）</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">主页</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">历史文章</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">标签</a>
+        </li>
+      
+        <li class="nav-item" data-path="/DLModels/">
+          <a href="/DLModels/">深度学习模型</a>
+        </li>
+      
+        <li class="nav-item" data-path="/paperDownload/">
+          <a href="/paperDownload/">论文下载</a>
+        </li>
+      
+        <li class="nav-item" data-path="/demo/">
+          <a href="/demo/">案例展示</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">关于作者</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+<!-- LaTex Display -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Canvas 2D详解</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="Update time"></i>
+          2021-03-31 00:19:50
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="Tags"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+                    <b>#</b> 前端
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/JavaScript/" title="JavaScript">
+                    <b>#</b> JavaScript
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/HTML5/" title="HTML5">
+                    <b>#</b> HTML5
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>在我书的第六章中有一个关于<code>MNIST</code>手写数字的例子，当数据集加载完成之后，用户可以在<code>&lt;canvas/&gt;</code>上输入手写数字，点击「预测」按钮之后，浏览器会弹出经模型预测之后的结果；在我书的第九章和第十章中，分别有关于目标检测和人体姿态检测的案例，当关键点的得分符合一定要求时，会通过<code>&lt;canvas/&gt;</code>将关键部分绘制出来，请看效果：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210302151927569.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图1 - MNIST手写数字案例</center>
+<br/>
+
+<p><img src="https://img-blog.csdnimg.cn/20210302151641122.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图2 - 人体姿态检测案例</center>
+<br/>
+
+<p><img src="https://img-blog.csdnimg.cn/20210302151811904.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图3 - 目标检测案例</center>
+<br/>
+
+
+<p>接下来，我们将在本文中详细讲解一下上述三个模块均用到的一个技术<code>&lt;canvas/&gt;</code>。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>  MDN Web Docs：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API">https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API</a></li>
+<li>《JavaScript高级程序设计（第三版）》</li>
+<li>《HTML5权威指南》</li>
+</ol>
+<h3 id="1-canvas概述"><a href="#1-canvas概述" class="headerlink" title="1.canvas概述"></a>1.canvas概述</h3><p>HTML5最受欢迎的功能就是<code>&lt;canvas&gt;</code>元素，<code>Canvas API</code>提供了一个通过<code>JavaScript</code>和<code>HTML</code>的<code>&lt;canvas&gt;</code>元素来绘制图形的方式，可以用于动画、游戏画面、数据可视化、图片编辑以及实时视频处理等方面，该<code>API</code>主要聚焦于<code>2D</code>图形，我们也可以使用<code>WebGL API</code>绘制硬件加速的<code>2D</code>和<code>3D</code>图形。</p>
+<h3 id="2-基本用法"><a href="#2-基本用法" class="headerlink" title="2.基本用法"></a>2.基本用法</h3><p>使用<code>&lt;canvas&gt;</code>大概可以分为两个步骤：</p>
+<ol>
+<li> 在<code>HTML</code>中定义<code>&lt;canvas&gt;</code>标签；</li>
+<li>获取<code>&lt;canvas&gt;</code>对象的上下文并判断<code>getContext()</code>方法是否存在；</li>
+</ol>
+<p>了解了使用<code>&lt;canvas&gt;</code>的大概步骤之后，我们首先在页面中定义一个<code>&lt;canvas&gt;</code>标签，请看代码示例：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>canvas示例<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>canvas</span> <span class="token attr-name">width</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>500<span class="token punctuation">"</span></span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>500<span class="token punctuation">"</span></span><span class="token style-attr language-css"><span class="token attr-name"> <span class="token attr-name">style</span></span><span class="token punctuation">="</span><span class="token attr-value"><span class="token property">border</span><span class="token punctuation">:</span> 1px solid red</span><span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>canvas<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>canvas</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>该标签有两个属性——<code>width</code>和<code>height</code>，当没有设置<code>width</code>和<code>height</code>的值时，<code>&lt;canvas&gt;</code>标签会初始化大小为<code>300*150px</code>的矩形，我们也可以通过<code>CSS</code>去设置<code>&lt;canvas&gt;</code>元素的大小，但在绘制时图像会伸缩以适应它的尺寸框架，可能会出现扭曲等情况，所以推荐大家使用<code>width</code>和<code>height</code>属性明确的规定宽度和高度，接下来，请看效果展示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330003642616.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图4 - 画布展示</center>
+<br/>
+
+
+<p>在页面中定义了<code>&lt;canvas&gt;</code>标签之后，我们需要获取该标签的绘图上下文，请看示例代码：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ctx<span class="token punctuation">.</span>fillStyle <span class="token operator">=</span> <span class="token string">"orange"</span>
+    ctx<span class="token punctuation">.</span><span class="token function">fillRect</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述代码中，我们首先通过           <code>document.getElementById()</code>方法获取页面中的<code>&lt;canvas&gt;</code>标签，并通过<code>getContext()</code>方法获取渲染上下文和它的绘画功能，接着我们通过<code>ctx.fillStyle()</code>和<code>ctx.fillRect()</code>方法在<code>&lt;canvas&gt;</code>中绘制了一个左上角（<code>x</code>，<code>y</code>）坐标为<code>（10，10）</code>且大小为<code>100*100px</code>的绿色正方形，请看效果展示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330004727103.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图5 - 绘制矩形</center>
+<br/>
+
+<h3 id="3-2D上下文"><a href="#3-2D上下文" class="headerlink" title="3.2D上下文"></a>3.2D上下文</h3><p>使用<code>2D</code>绘图上下文提供的方法可以绘制简单的<code>2D</code>图形，比如矩形、弧线和路径。<code>2D</code>上下文的坐标开始于<code>&lt;canvas&gt;</code>元素的左上角，原点坐标是<code>(0,0)</code>，所有坐标值都是基于这个原点计算，<code>x</code>值越大表示越靠右，<code>y</code>值越大表示越靠下。</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330010540445.png"></p>
+<center>图6 - canvas绘制规则</center>
+<br/>
+
+<h4 id="3-1-填充和描边"><a href="#3-1-填充和描边" class="headerlink" title="3.1 填充和描边"></a>3.1 填充和描边</h4><p>2D上下文的两种基本绘图操作是填充和描边。填充就是用指定的样式（颜色、渐变或图像）填充图形；描边就是只在图形的边缘画线。大多数<code>2D</code>上下文操作都会细分为填充和描边两个操作，其操作结果取决于<code>fillStyle</code>属性和<code>strokeStyle</code>属性，其默认值均为<code>#000000</code>，请看代码示例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ctx<span class="token punctuation">.</span><span class="token function">fillRect</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">strokeRect</span><span class="token punctuation">(</span><span class="token number">120</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们通过<code>ctx.fillRect()</code>方法和<code>ctx.strokeRect()</code>方法分别绘制了两个矩形，其中通过<code>ctx.fillRect()</code>方法绘制的为填充矩形；通过<code>ctx.strokeRect()</code>方法绘制的为描边矩形，其样式均采用默认样式，请看演示效果：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330011640310.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图7 - 案例展示</center>
+<br/>
+
+<h4 id="3-2-绘制矩形"><a href="#3-2-绘制矩形" class="headerlink" title="3.2 绘制矩形"></a>3.2 绘制矩形</h4><p>canvas只支持两种形式的图形绘制：矩形和路径，矩形是唯一一种可以直接在<code>2D</code>上下文中绘制的形状，它提供了三种方法绘制矩形，请看详细介绍：</p>
+<ol>
+<li><code>fillRext(x,y,width,height)</code></li>
+</ol>
+<p>该方法用于绘制一个填充的矩形，可以通过<code>fillStyle</code>属性决定当前矩形的填充样式；</p>
+<p>2.<code>strokeRect(x,y,width,height)</code></p>
+<p>该方法用于绘制一个矩形的边框；</p>
+<p>3.<code>clearRect(x,y,width,height)</code></p>
+<p>该方法用于清除指定矩形区域，让清除部分完全透明；</p>
+<p>上述提供的三个方法中均包含相同的参数，<code>x</code>与<code>y</code>指定了在<code>&lt;canvas&gt;</code>画布上所绘制矩形左上角（相对于原点）的坐标，<code>width</code>和<code>height</code>设置矩形的尺寸，请看演示案例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ctx<span class="token punctuation">.</span><span class="token function">fillRect</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">300</span><span class="token punctuation">,</span><span class="token number">300</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">clearRect</span><span class="token punctuation">(</span><span class="token number">150</span><span class="token punctuation">,</span><span class="token number">150</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">strokeRect</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中，我们在大小为<code>500*500px</code>的画布中绘制了三个矩形，其中第一个矩形左上角坐标为<code>(100,100)</code>，大小为<code>300*300</code>；第二个矩形左上角坐标为<code>(150,150)</code>，大小为<code>200*200</code>；第三个矩形左上角坐标为<code>(200,200)</code>，大小为<code>100*100</code>，请看效果演示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330013306293.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图8 - 案例展示</center>
+<br/>
+
+<h4 id="3-3-绘制路径"><a href="#3-3-绘制路径" class="headerlink" title="3.3 绘制路径"></a>3.3 绘制路径</h4><p>要绘制路径，首先必须调用<code>beginPath()</code>方法，表示要开始绘制新的路径，然后调用以下方法来绘制路径，请看方法介绍：</p>
+<p>1.<code>arc(x,y,radius,startAngle,endAngle,anticlockwise)</code></p>
+<p>该方法会绘制一个以<code>(x,y)</code>为圆心，以<code>radius</code>为半径的圆弧，从<code>startAngle</code>开始到<code>endAngle</code>结束，其中，<code>startAngle</code>表示圆弧的起始点（单位：弧度），<code>endAngle</code>表示圆弧的终点（单位：弧度），我们还可以指定<code>anticlockwise</code>的参数值来规定绘制圆弧的方向（默认为顺时针）；</p>
+<p>2.<code>arcTo(x1,y1,x2,y2,radius)</code></p>
+<p>该方法根据给定的控制点（其中<code>x1,y1</code>表示第一个控制点的坐标，<code>x2,y2</code>表示第二个控制点的坐标，）和半径画一段圆弧，再以直线连接两个控制点；</p>
+<p>3.<code>lineTo(x,y)</code></p>
+<p>该方法绘制一条从当前位置到指定<code>x</code>以及<code>y</code>位置的直线；</p>
+<p>4.<code>moveTo(x,y)</code></p>
+<p>该方法将笔触移动到指定的坐标<code>x</code>以及<code>y</code>上，当<code>&lt;canvas&gt;</code>初始化或者<code>beginPath()</code>调用之后，我们通常会使用<code>moveTo()</code>函数设置起点；</p>
+<p>5.<code>rect(x,y,width,height)</code></p>
+<p>该方法绘制一个左上角坐标为<code>(x,y)</code>，宽高为<code>width</code>和<code>height</code>的矩形；</p>
+<p>创建了路径之后，我们可以调用<code>closePath()</code>方法绘制一条连接到路径起点的线条；也可以调用<code>fill()</code>方法并指定<code>fillStyle</code>属性完成填充；另外，也可以通过<code>stroke()</code>方法对路径描边，并通过<code>strokeStyle</code>指定其样式；</p>
+<p>接下来，请看演示案例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//绘制一个圆形</span>
+    ctx<span class="token punctuation">.</span><span class="token function">beginPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">moveTo</span><span class="token punctuation">(</span><span class="token number">250</span><span class="token punctuation">,</span><span class="token number">150</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">arc</span><span class="token punctuation">(</span><span class="token number">250</span><span class="token punctuation">,</span><span class="token number">150</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token operator">*</span>Math<span class="token punctuation">.</span><span class="token constant">PI</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span>fillStyle <span class="token operator">=</span> <span class="token string">"aqua"</span>
+    ctx<span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">closePath</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment">//绘制一条线</span>
+    ctx<span class="token punctuation">.</span><span class="token function">beginPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">moveTo</span><span class="token punctuation">(</span><span class="token number">150</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">lineTo</span><span class="token punctuation">(</span><span class="token number">350</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span>lineWidth <span class="token operator">=</span> <span class="token number">10</span>
+    ctx<span class="token punctuation">.</span>strokeStyle <span class="token operator">=</span> <span class="token string">"blue"</span>
+    ctx<span class="token punctuation">.</span><span class="token function">stroke</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">closePath</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment">//绘制一个矩形</span>
+    ctx<span class="token punctuation">.</span><span class="token function">beginPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">moveTo</span><span class="token punctuation">(</span><span class="token number">150</span><span class="token punctuation">,</span><span class="token number">250</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">rect</span><span class="token punctuation">(</span><span class="token number">150</span><span class="token punctuation">,</span><span class="token number">250</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span>fillStyle <span class="token operator">=</span> <span class="token string">"green"</span>
+    ctx<span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ctx<span class="token punctuation">.</span><span class="token function">closePath</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述代码中我们分别绘制了圆形、直线、矩形，请看效果展示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330020747737.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图9 - 案例展示</center>
+<br/>
+
+
+<h4 id="3-4-绘制文本"><a href="#3-4-绘制文本" class="headerlink" title="3.4 绘制文本"></a>3.4 绘制文本</h4><p>canvas提供了两种方法来渲染文本，请看详细介绍：</p>
+<ol>
+<li><code>fillText(text,x,y,[,maxWidth])</code></li>
+</ol>
+<p>该方法在指定的<code>(x,y)</code>位置填充指定的文本，其中<code>maxWidth</code>表示绘制的最大宽度，为可选参数；</p>
+<p>2.<code>strokeText(text,x,y,[,maxWidth])</code></p>
+<p>该方法在指定的<code>(x,y)</code>位置绘制文本边框，其中<code>maxWidth</code>表示绘制的最大宽度，为可选参数；</p>
+<p>我们可以通过设置<code>font</code>、<code>textAlign</code>、<code>textBaseline</code>和<code>direction</code>的值来对文本进行渲染，请看详细介绍：</p>
+<ul>
+<li><p>font：表示文本样式、大小及字体，默认字体是<code>10px sans-serif</code>；</p>
+</li>
+<li><p>textAlign：表示文本对齐方式，其值包括<code>left</code>（文本左对齐）、<code>right</code>（文本右对齐）、<code>center</code>（文本居中对齐）、<code>start</code>（文本对齐界线开始的地方，即左对齐指本地从左向右，右对齐指本地从右向左）、<code>end</code>（文本对齐界线结束的地方，即左对齐指本地从左向右，右对齐指本地从右向左），默认值为<code>start</code>；</p>
+</li>
+<li><p>textBaseline：表示文本的基线，其值包括<code>top</code>（文本基线在文本块的顶部）、<code>hanging</code>（文本基线是悬挂基线）、<code>middle</code>（文本基线在文本块的中间）、<code>alphabetic</code>（文本基线是标准的字母基线）、<code>ideographic</code>、<code>bottom</code>，默认值是<code> alphabetic</code>；</p>
+</li>
+<li><p>direction：此功能某些浏览器尚在开发中，请参考浏览器兼容性表格以得到在不同浏览器中适合使用的前缀；</p>
+</li>
+</ul>
+<p>接下来，请看演示案例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+       <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+       ctx<span class="token punctuation">.</span>font <span class="token operator">=</span> <span class="token string">"bold 30px Arial"</span>
+       ctx<span class="token punctuation">.</span>textAlign <span class="token operator">=</span> <span class="token string">"center"</span>
+       ctx<span class="token punctuation">.</span>textBaseline <span class="token operator">=</span> <span class="token string">'middle'</span>
+       ctx<span class="token punctuation">.</span><span class="token function">fillText</span><span class="token punctuation">(</span><span class="token string">"石璞东"</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+       ctx<span class="token punctuation">.</span><span class="token function">strokeText</span><span class="token punctuation">(</span><span class="token string">"石璞东"</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+   <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码中我们通过<code>ctx.fillText()</code>方法和<code>ctx.strokeText()</code>方法绘制了字符串<code>石璞东</code>，并指定了其字体样式、对齐方式等，请看效果演示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330022540752.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图10 - 案例展示</center>
+<br/>
+
+<h4 id="3-5-绘制图像"><a href="#3-5-绘制图像" class="headerlink" title="3.5 绘制图像"></a>3.5 绘制图像</h4><p>可以用<code>drawImage()</code>方法在画布上绘制图像，该方法需要三个、五个或九个参数，请看参数解释：</p>
+<ol>
+<li><code>drawImage(image, x, y)</code></li>
+</ol>
+<p>其中，<code>image</code>是<code>image</code>或者<code>canvas</code>对象，<code>x</code>和<code>y</code>是其在目标<code>canvas</code>里的起始坐标；</p>
+<p>2.<code>drawImage(image, x, y, width, height)</code></p>
+<p>该方法多了两个参数：<code>width</code>和<code>height</code>，这两个参数用来控制当向<code>canvas</code>画入时应该缩放的大小；</p>
+<p>3.<code>drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)</code></p>
+<p>第一个参数和其它的是相同的，都是一个图像或者另一个<code>canvas</code>的引用，前4个是定义图像源的切片位置和大小，后4个则是定义切片的目标显示位置和大小，如图所示：<br><img src="https://img-blog.csdnimg.cn/2021033012241450.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图11 - 图解参数</center>
+<br/>
+
+<p>接下来，请看演示案例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token constant">DOCTYPE</span> html<span class="token operator">></span>
+<span class="token operator">&lt;</span>html lang<span class="token operator">=</span><span class="token string">"en"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>head<span class="token operator">></span>
+    <span class="token operator">&lt;</span>meta charset<span class="token operator">=</span><span class="token string">"UTF-8"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>title<span class="token operator">></span>canvas示例<span class="token operator">&lt;</span><span class="token operator">/</span>title<span class="token operator">></span>
+    <span class="token operator">&lt;</span>style<span class="token operator">></span>
+        img<span class="token punctuation">&#123;</span>
+            width<span class="token operator">:</span> <span class="token number">250</span>px<span class="token punctuation">;</span>
+            height<span class="token operator">:</span> <span class="token number">250</span>px<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>style<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>head<span class="token operator">></span>
+<span class="token operator">&lt;</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span>img src<span class="token operator">=</span><span class="token string">"author.jpg"</span> id<span class="token operator">=</span><span class="token string">"image"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"btn"</span><span class="token operator">></span>绘制图像<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"clear"</span><span class="token operator">></span>清除画布<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+<span class="token operator">&lt;</span>canvas width<span class="token operator">=</span><span class="token string">"500"</span> height<span class="token operator">=</span><span class="token string">"500"</span> style<span class="token operator">=</span><span class="token string">"border: 1px solid red"</span> id<span class="token operator">=</span><span class="token string">"canvas"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>canvas<span class="token operator">></span>
+<span class="token operator">&lt;</span>script<span class="token operator">></span>
+    <span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> imgEle <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"image"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> oclear <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"clear"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> obtn <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"btn"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> num <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        obtn<span class="token punctuation">.</span><span class="token function-variable function">onclick</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>num <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span>imgEle<span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>num <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span>imgEle<span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+                ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span>imgEle<span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">300</span><span class="token punctuation">,</span><span class="token number">300</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        oclear<span class="token punctuation">.</span><span class="token function-variable function">onclick</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            ctx<span class="token punctuation">.</span><span class="token function">clearRect</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">)</span>
+            num <span class="token operator">>=</span> <span class="token number">2</span> <span class="token operator">?</span> num<span class="token operator">=</span><span class="token number">0</span><span class="token operator">:</span>num<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>html<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述代码中，我们分别指定了当<code>ctx.drawImage()</code>方法分别有3个、5个、9个参数时绘制图像的效果，请看效果展示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330095408676.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图12 - 案例展示</center>
+<br/>
+
+<p>读者在每次绘制完成当前状态下的图像之后，需要点击「清除画布」按钮清除当前画布。</p>
+<p>实际上，我们还可以将<code>video</code>元素作为<code>drawImage()</code>方法的图像来源，请看代码示例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token constant">DOCTYPE</span> html<span class="token operator">></span>
+<span class="token operator">&lt;</span>html lang<span class="token operator">=</span><span class="token string">"en"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>head<span class="token operator">></span>
+    <span class="token operator">&lt;</span>meta charset<span class="token operator">=</span><span class="token string">"UTF-8"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>title<span class="token operator">></span>canvas示例<span class="token operator">&lt;</span><span class="token operator">/</span>title<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>head<span class="token operator">></span>
+<span class="token operator">&lt;</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span>video src<span class="token operator">=</span><span class="token string">"Lenet.mp4"</span> id<span class="token operator">=</span><span class="token string">"video"</span> controls width<span class="token operator">=</span><span class="token string">"360"</span> height<span class="token operator">=</span><span class="token string">"240"</span> preload<span class="token operator">=</span><span class="token string">"auto"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>video<span class="token operator">></span>
+<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"btn"</span><span class="token operator">></span>绘制图像<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"clear"</span><span class="token operator">></span>清除画布<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+<span class="token operator">&lt;</span>canvas width<span class="token operator">=</span><span class="token string">"500"</span> height<span class="token operator">=</span><span class="token string">"500"</span> style<span class="token operator">=</span><span class="token string">"border: 1px solid red"</span> id<span class="token operator">=</span><span class="token string">"canvas"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>canvas<span class="token operator">></span>
+<span class="token operator">&lt;</span>script<span class="token operator">></span>
+    <span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> videoEle <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"video"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> oclear <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"clear"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> obtn <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"btn"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        obtn<span class="token punctuation">.</span><span class="token function-variable function">onclick</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span>videoEle<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">360</span><span class="token punctuation">,</span><span class="token number">360</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+        oclear<span class="token punctuation">.</span><span class="token function-variable function">onclick</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            ctx<span class="token punctuation">.</span><span class="token function">clearRect</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>html<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述代码中，我们可以通过点击「绘制图像」按钮将当前帧图像绘制在<code>canvas</code>中；我们还可以在视频中绘制一个矩形，请看代码示例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token constant">DOCTYPE</span> html<span class="token operator">></span>
+<span class="token operator">&lt;</span>html lang<span class="token operator">=</span><span class="token string">"en"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>head<span class="token operator">></span>
+    <span class="token operator">&lt;</span>meta charset<span class="token operator">=</span><span class="token string">"UTF-8"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>title<span class="token operator">></span>canvas示例<span class="token operator">&lt;</span><span class="token operator">/</span>title<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>head<span class="token operator">></span>
+<span class="token operator">&lt;</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span>video src<span class="token operator">=</span><span class="token string">"Lenet.mp4"</span> id<span class="token operator">=</span><span class="token string">"video"</span> controls width<span class="token operator">=</span><span class="token string">"360"</span> height<span class="token operator">=</span><span class="token string">"240"</span> preload<span class="token operator">=</span><span class="token string">"auto"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>video<span class="token operator">></span>
+<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"btn"</span><span class="token operator">></span>开始预测<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"clear"</span><span class="token operator">></span>清除画布<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+<span class="token operator">&lt;</span>canvas width<span class="token operator">=</span><span class="token string">"500"</span> height<span class="token operator">=</span><span class="token string">"500"</span> style<span class="token operator">=</span><span class="token string">"border: 1px solid red"</span> id<span class="token operator">=</span><span class="token string">"canvas"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>canvas<span class="token operator">></span>
+<span class="token operator">&lt;</span>script<span class="token operator">></span>
+    <span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> videoEle <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"video"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> oclear <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"clear"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> obtn <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"btn"</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> width <span class="token operator">=</span> <span class="token number">180</span><span class="token punctuation">;</span>
+        <span class="token keyword">var</span> height <span class="token operator">=</span> <span class="token number">150</span><span class="token punctuation">;</span>
+        ctx<span class="token punctuation">.</span>lineWidth <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+        ctx<span class="token punctuation">.</span>strokeStyle <span class="token operator">=</span> <span class="token string">"aqua"</span>
+        obtn<span class="token punctuation">.</span><span class="token function-variable function">onclick</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span>videoEle<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">360</span><span class="token punctuation">,</span><span class="token number">360</span><span class="token punctuation">)</span>
+            ctx<span class="token punctuation">.</span><span class="token function">strokeRect</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token number">90</span><span class="token punctuation">,</span>width<span class="token punctuation">,</span>height<span class="token punctuation">)</span>
+            ctx<span class="token punctuation">.</span>font <span class="token operator">=</span> <span class="token string">"20px bold Arial"</span>
+            ctx<span class="token punctuation">.</span>fillStyle <span class="token operator">=</span><span class="token string">"blue"</span>
+            ctx<span class="token punctuation">.</span><span class="token function">fillText</span><span class="token punctuation">(</span><span class="token string">"computer"</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">85</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+        oclear<span class="token punctuation">.</span><span class="token function-variable function">onclick</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            ctx<span class="token punctuation">.</span><span class="token function">clearRect</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>html<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上述代码中，我们在视频中绘制了一个矩形，并用矩形框框出了视频在<code>0:01</code>秒时电脑出现的位置，请看效果演示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330101242545.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图13 - 案例展示</center>
+<br/>
+
+
+<h3 id="4-你画我猜（MNIST手写数字版）"><a href="#4-你画我猜（MNIST手写数字版）" class="headerlink" title="4.你画我猜（MNIST手写数字版）"></a>4.你画我猜（MNIST手写数字版）</h3><p>讲解完成了<code>&lt;canvas&gt;</code>的基础知识之后，我们来看看本书中用到的<code>&lt;canvas&gt;</code>的相关内容，在<code>你画我猜（MNIST手写数字版）</code>这个案例中，我们先在页面中定义一个<code>&lt;canvas&gt;</code>标签，当用户按下鼠标并拖动时，可以在画布上画出拖动的轨迹，请看代码示例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token constant">DOCTYPE</span> html<span class="token operator">></span>
+<span class="token operator">&lt;</span>html lang<span class="token operator">=</span><span class="token string">"en"</span><span class="token operator">></span>
+<span class="token operator">&lt;</span>head<span class="token operator">></span>
+    <span class="token operator">&lt;</span>meta charset<span class="token operator">=</span><span class="token string">"UTF-8"</span><span class="token operator">></span>
+    <span class="token operator">&lt;</span>title<span class="token operator">></span>你画我猜（<span class="token constant">MNIST</span>手写数字版）canvas示例<span class="token operator">&lt;</span><span class="token operator">/</span>title<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>head<span class="token operator">></span>
+<span class="token operator">&lt;</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span>canvas width<span class="token operator">=</span><span class="token string">"500"</span> height<span class="token operator">=</span><span class="token string">"500"</span> style<span class="token operator">=</span><span class="token string">"border: 1px solid red"</span> id<span class="token operator">=</span><span class="token string">"canvas"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>canvas<span class="token operator">></span>
+<span class="token operator">&lt;</span>button id<span class="token operator">=</span><span class="token string">"clear"</span><span class="token operator">></span>清除画布<span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">></span>
+<span class="token operator">&lt;</span>script<span class="token operator">></span>
+    <span class="token keyword">var</span> canvas <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"canvas"</span><span class="token punctuation">)</span>
+    <span class="token keyword">var</span> oclear <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"clear"</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>canvas<span class="token punctuation">.</span>getContext<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">var</span> ctx <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">"2d"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        canvas<span class="token punctuation">.</span><span class="token function-variable function">onmousemove</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>buttons <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                ctx<span class="token punctuation">.</span>fillStyle <span class="token operator">=</span> <span class="token string">"black"</span>
+                ctx<span class="token punctuation">.</span><span class="token function">fillRect</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>offsetX<span class="token punctuation">,</span>e<span class="token punctuation">.</span>offsetY<span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        oclear<span class="token punctuation">.</span><span class="token function-variable function">onclick</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+            ctx<span class="token punctuation">.</span><span class="token function">clearRect</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>body<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">/</span>html<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>请看效果演示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20210330102629884.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图13 - 案例展示</center>
+<br/>
+
+
+
+<h3 id="5-绘制关键点（人体姿态检测、目标识别）"><a href="#5-绘制关键点（人体姿态检测、目标识别）" class="headerlink" title="5.绘制关键点（人体姿态检测、目标识别）"></a>5.绘制关键点（人体姿态检测、目标识别）</h3><p>在本书关于目标检测的案例中，我们需要使用手机的摄像头，并实时的框选出摄像头所采集的每一帧数据中的物体，如图3所示，其中涉及到的<code>canvas</code>相关的知识请参考3.5小节，这里不在赘述。</p>
+<h3 id="6-文章最后"><a href="#6-文章最后" class="headerlink" title="6.文章最后"></a>6.文章最后</h3><p>以上就是本文的所有内容，小伙伴们学会了嘛？快去实践一下吧！更多详情请关注我的更多开源作品：</p>
+<p><strong>1. 微信公众号（hahaCoder）</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210205234148138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图14 - 微信公众号</center>
+<br/>
+
+<p><strong>2. 微信小程序（hahaAI）</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210205234039346.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTc2NzgwMg==,size_16,color_FFFFFF,t_70"></p>
+<center>图15 - 微信小程序</center>
+<br/>
+
+<p><strong>3. Github</strong><br>链接地址：<a target="_blank" rel="noopener" href="https://github.com/TURBO1002">https://github.com/TURBO1002</a></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2021/03/25/%E9%80%9B%E4%B8%80%E9%80%9B%E5%9B%BD%E5%A4%96%E7%9A%84%E9%BB%84%E8%89%B2%E7%BD%91%E7%AB%99/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>Prev</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="Update time"></i>
+              2021-03-31 00:19:50
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="Tags"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E5%89%8D%E7%AB%AF/" title="前端">
+                        <b>#</b> 前端
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/JavaScript/" title="JavaScript">
+                        <b>#</b> JavaScript
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/HTML5/" title="HTML5">
+                        <b>#</b> HTML5
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div class="post-catalog" id="catalog">
+    <div class="title">Contents</div>
+    <div class="catalog-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-canvas%E6%A6%82%E8%BF%B0"><span class="toc-text">1.canvas概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">2.基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2D%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-text">3.2D上下文</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E5%A1%AB%E5%85%85%E5%92%8C%E6%8F%8F%E8%BE%B9"><span class="toc-text">3.1 填充和描边</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E7%BB%98%E5%88%B6%E7%9F%A9%E5%BD%A2"><span class="toc-text">3.2 绘制矩形</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E7%BB%98%E5%88%B6%E8%B7%AF%E5%BE%84"><span class="toc-text">3.3 绘制路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E7%BB%98%E5%88%B6%E6%96%87%E6%9C%AC"><span class="toc-text">3.4 绘制文本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-%E7%BB%98%E5%88%B6%E5%9B%BE%E5%83%8F"><span class="toc-text">3.5 绘制图像</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BD%A0%E7%94%BB%E6%88%91%E7%8C%9C%EF%BC%88MNIST%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E7%89%88%EF%BC%89"><span class="toc-text">4.你画我猜（MNIST手写数字版）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E7%BB%98%E5%88%B6%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%88%E4%BA%BA%E4%BD%93%E5%A7%BF%E6%80%81%E6%A3%80%E6%B5%8B%E3%80%81%E7%9B%AE%E6%A0%87%E8%AF%86%E5%88%AB%EF%BC%89"><span class="toc-text">5.绘制关键点（人体姿态检测、目标识别）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%96%87%E7%AB%A0%E6%9C%80%E5%90%8E"><span class="toc-text">6.文章最后</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+
+  <div id="vcomments"></div>
+
+  <script>
+    new Valine({
+      el: '#vcomments',
+      appId: 'o0mB8Lk91UNsopY04u0Txrfz-gzGzoHsz',
+      appKey: '9o0SPf6H8r93Xqp1kaprRmSB',
+      placeholder: '你好，我是石璞东!',
+      avatar: 'retro',
+      lang: 'en'
+    })
+  </script>
+
+    <style>
+      .comments-container .v .vempty {
+        display: none!important;
+      }
+    </style>
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        <div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://github.com/TURBO1002">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="email" href="">
+            <i class="iconfont icon-envelope"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="facebook" href="">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="twitter" href="">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="wechat" href="">
+            <i class="iconfont icon-wechat"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="weibo" target="_blank" rel="noopener" href="https://weibo.com/6217165734/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1">
+            <i class="iconfont icon-weibo"></i>
+          </a>
+        </li>
+      
+        <li>
+          <a title="rss" href="/atom.xml">
+            <i class="iconfont icon-rss"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © Oranges 2020</a>
+        
+    </div>
+  
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://www.shipudong.com">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+</div>
+
+      </div>
+
+      <div class="back-to-top hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+      
+  <div class="search-icon" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="Search...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>First search, index file loading, please wait...<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>No result<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The search.xml file was not found, please refer to：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>The request failed, Try to refresh the page or try again later.<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+    </div>
+  </body>
+</html>
